@@ -1,4 +1,4 @@
-jquerry-Smartcrop
+jQuery-Smartcrop
 =================
 
-Plugin Jquerry to crop physically picture in a container like a "background : cover" css style
+Plugin Jquery to crop physically picture in a container like a "background : cover" css style
