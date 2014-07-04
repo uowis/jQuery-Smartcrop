@@ -1,0 +1,30 @@
+{
+  "name": "jquery-Smartcrop",
+  "version": "0.1.0",
+  "homepage": "https://github.com/uowis/jquerry-Smartcrop",
+  "authors": [
+    "uowis <simon@uowis.fr>"
+  ],
+  "description": "Jquery plugin to crop image in a container",
+  "main": "smartcrop.js",
+  "keywords": [
+    "jquerry",
+    "image",
+    "picture",
+    "crop",
+    "cropper",
+    "plug-in",
+    "cover"
+  ],
+  "dependencies": {
+      "jquery": "~1.10"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
