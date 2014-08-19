@@ -1,11 +1,16 @@
 (function($)
 {
-    $.fn.smartCrop=function() {
 
-        this.each(function() {
+    function cropIt() {
 
-            $container =  $(this);
-            $image = $("img", this);
+    }
+
+    $.fn.smartCrop = function() {
+
+        return this.each(function() {
+
+            var $container =  $(this);
+            var $image = $("img", this);
 
             $container.addClass( "smart-crop-container" );
 
