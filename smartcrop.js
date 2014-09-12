@@ -1,73 +1,70 @@
 (function($){
 
-    var transformPicture = function($container, $image, crop_dimensions) {
-      if (crop_dimensions.cRatio < crop_dimensions.iRatio) {
-        $image.css({
+    var transformPicture = function(cropData) {
+      if (cropData.cRatio < cropData.iRatio) {
+        var offsetX = ((cropData.cHeight * cropData.iRatio) - cropData.cWidth) * -.5;
+        cropData.image.css({
+          'width': 'auto',
+          'height': '100%',
+          'left': offsetX.toString() + 'px',
+          'top': '0',
+          'position': 'absolute',
           'max-width': 'none',
-          'max-height': '100%'
+          'max-height': 'none',
+          'min-width':  '100%',
+          'min-height': '100%'
         });
       }
       else {
-        $image.css({
-          'max-width': '100%',
-          'max-height': 'none'
+        var offsetY = (( cropData.cWidth / cropData.iRatio) - cropData.cHeight) * -.5;
+        cropData.image.css({
+          'width': '100%',
+          'height': 'auto',
+          'left': '0',
+          'top': offsetY.toString() + 'px',
+          'position': 'absolute',
+          'max-width':  'none',
+          'max-height': 'none',
+          'min-width':  '100%',
+          'min-height': '100%'
         });
       }
-
-      var offsetX = (($image.width() - $container.width()) * -.5);
-      var offsetY = (($image.height() - $container.height()) * -.5);
-
-      $image.css({
-        'left': offsetX.toString() + 'px',
-        'top': offsetY.toString() + 'px'
-      });
     }
 
-    var refreshImageSizes = function($container, $image, crop_dimensions) {
-      crop_dimensions.iWidth = $image.width();
-      crop_dimensions.iHeight = $image.height();
-      crop_dimensions.iRatio =  crop_dimensions.iWidth / crop_dimensions.iHeight;
-      transformPicture($container, $image, crop_dimensions);
+    var refreshImageSizes = function(cropData) {
+      if(!cropData.isResize){
+        cropData.isResize = true;
+        cropData.iWidth = cropData.image.width();
+        cropData.iHeight = cropData.image.height();
+        cropData.iRatio =  cropData.iWidth / cropData.iHeight;
+        transformPicture(cropData);
+      }
     }
 
-    var refreshContainerSizes = function($container, $image, crop_dimensions) {
-      crop_dimensions.cWidth = $container.width();
-      crop_dimensions.cHeight = $container.height();
-      crop_dimensions.cRatio = crop_dimensions.cWidth / crop_dimensions.cHeight;
-      transformPicture($container, $image, crop_dimensions);
+    var refreshContainerSizes = function(cropData) {
+      cropData.cWidth = cropData.container.width();
+      cropData.cHeight = cropData.container.height();
+      cropData.cRatio = cropData.cWidth / cropData.cHeight;
+      transformPicture( cropData);
     }
 
     var crop = function($container) {
-
-        var $image = $("img", $container);
-
-        $container.addClass( "smart-crop-container" );
-
-        var containerWidth = $container.width();
-        var containerHeight = $container.height();
-
-        var imageWidth = $image.width();
-        var imageHeight = $image.height();
-
-        var container_ratio = containerWidth / containerHeight;
-        var image_ratio = $image.width() / $image.height();
-
-        var crop_dimensions = {   cWidth:   containerWidth,
-                                  cHeight:  containerHeight,
-                                  iWidth:   imageWidth,
-                                  iHeight:  imageHeight,
-                                  cRatio:   container_ratio,
-                                  iRation:  image_ratio
+        var cropData = {   container:  $container,
+                                  image:    $("img", $container),
+                                  isResize: false,
+                                  cWidth:   $container.width(),
+                                  cHeight:  $container.height()
         };
+        cropData.container.addClass( "smart-crop-container" );
+        cropData.cRatio = cropData.cWidth / cropData.cHeight;
+        cropData.image.load(refreshImageSizes.bind(null,cropData));
 
+        $( window ).load(refreshImageSizes.bind(null,cropData));
 
-        $image.load(refreshImageSizes.bind(null,$container,$image,crop_dimensions));
-
-        $( window ).resize(refreshContainerSizes.bind(null,$container,$image,crop_dimensions));
+        $( window ).resize(refreshContainerSizes.bind(null,cropData));
     }
 
     $.fn.smartCrop = function() {
-
         return this.each(function() {
             crop($(this));
         });
